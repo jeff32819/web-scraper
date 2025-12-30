@@ -1,2 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
-Console.WriteLine("Hello, World!");
+﻿var tmp = new WebScraperDll.Scrape("http://jeff32819.com");
+await tmp.Init();
+
+
