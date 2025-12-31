@@ -32,8 +32,8 @@ public class Scrape
     private async Task DoEach(LinkItem linkItem)
     {
         linkItem.LinkScrapedFromWeb = true;
-        Console.WriteLine($"DoEach :: {linkItem.AbsoluteUri}");
-        linkItem.WebResponseResult = await Requester.GetFromWeb(linkItem.AbsoluteUri);
+        Console.WriteLine($"DoEach :: {linkItem.Uri.AbsoluteUri}");
+        linkItem.WebResponseResult = await Requester.GetFromWeb(linkItem.Uri.AbsoluteUri);
         if (IsNotTheSameHost(linkItem.Uri))
         {
             return; // do not add links for other hosts
@@ -45,7 +45,7 @@ public class Scrape
         {
             Console.WriteLine(href);
             var absoluteUrl = new Uri(RootUri, href).ToString();
-            LinkList.Add(absoluteUrl, linkItem.AbsoluteUri);
+            LinkList.Add(absoluteUrl, linkItem.Uri.AbsoluteUri);
             linkItem.Links.Add(href);
         }
     }

@@ -8,5 +8,12 @@
             value = list.FirstOrDefault(predicate);
             return value != null;
         }
+
+        public static string NormalizeUri(string txt)
+        {
+            var uri = new Uri(txt);
+            return uri.AbsoluteUri;
+        }
+        
     }
 }

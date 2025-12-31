@@ -14,7 +14,7 @@ namespace WebScraperDll
         /// <returns></returns>
         private LinkItem FindOrAdd(string scrapedLink)
         {
-            if (Links.TryFind(x => x.AbsoluteUri == scrapedLink, out var value))
+            if (Links.TryFind(x => x.Uri.AbsoluteUri == scrapedLink, out var value))
             {
                 return value;
             }
@@ -32,6 +32,7 @@ namespace WebScraperDll
         public void Add(string absoluteUri, string pageUrl)
         {
             var item = FindOrAdd(absoluteUri);
+            item.SkipScrape = !Code.SameHost(absoluteUri, pageUrl);
             if (item.OnPage.TryGetValue(pageUrl, out var count))
             {
                 item.OnPage[pageUrl] = count + 1;

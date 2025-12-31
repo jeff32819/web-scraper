@@ -1,6 +1,4 @@
-﻿using System.Security.Cryptography;
-using HtmlAgilityPack;
-using WebRequesterDll.Models;
+﻿using WebRequesterDll.Models;
 
 namespace WebScraperDll.Models
 {
@@ -8,15 +6,13 @@ namespace WebScraperDll.Models
     {
         public LinkItem(string absoluteUri)
         {
-            AbsoluteUri = absoluteUri;
             Uri = new Uri(absoluteUri);
-            Md5 = Jeff32819DLL.MiscCore20.Code.Md5Hash(absoluteUri);
+            Md5 = Jeff32819DLL.MiscCore20.Code.Md5Hash(Uri.AbsoluteUri);
         }
         public string Md5 { get; }
         public Uri Uri { get; }
         
-        public string AbsoluteUri { get; }
-        public Dictionary<string, int> OnPage = new Dictionary<string, int>();
+        public readonly Dictionary<string, int> OnPage = new Dictionary<string, int>();
         /// <summary>
         /// Has the link been scraped from the web.
         /// </summary>
@@ -26,5 +22,4 @@ namespace WebScraperDll.Models
         public WebResponseResult? WebResponseResult { get; set; }
         public List<string> Links { get; set; } = new();
     }
-    
 }
