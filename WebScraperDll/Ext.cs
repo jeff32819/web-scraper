@@ -1,4 +1,6 @@
-﻿namespace WebScraperDll
+﻿using System;
+
+namespace WebScraperDll
 {
     public static class Ext
     {
@@ -19,6 +21,19 @@
             var uri = new Uri(txt);
             return uri.Host;
         }
+        public static string ToMd5(this string txt) => Jeff32819DLL.MiscCore20.Code.Md5Hash(txt);
 
+        public static bool TryPopFirst<T>(this List<T> list, out T value)
+        {
+            if (list.Count > 0)
+            {
+                value = list[0];
+                list.RemoveAt(0);
+                return true;
+            }
+
+            value = default!;
+            return false;
+        }
     }
 }

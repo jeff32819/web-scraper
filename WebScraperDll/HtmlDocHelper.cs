@@ -8,6 +8,7 @@ namespace WebScraperDll
         public HtmlDocHelper(string html, string pageAbsoluteUri)
         {
             var pageUri = new Uri(pageAbsoluteUri);
+            Host = pageUri.Host;
             Document.LoadHtml(html);
             foreach (var linkUri in Document.DocumentNode.SelectNodes("//a[@href]").Select(item => item.GetAttributeValue("href", string.Empty)).Select(href => new Uri(new Uri(pageAbsoluteUri), href)))
             {
@@ -21,7 +22,7 @@ namespace WebScraperDll
                 }
             }
         }
-        
+        public string Host { get; }
         public List<string> InternalLinks { get; set; } = new();
         public List<string> ExternalLinks { get; set; } = new();
 
