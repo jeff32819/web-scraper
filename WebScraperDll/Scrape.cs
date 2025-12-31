@@ -39,9 +39,6 @@ public class Scrape
 
         var linkToScrape = new LinkToScrape(linkItem.Uri.AbsoluteUri);
         
-        
-
-
         linkItem.LinkScrapedFromWeb = true;
         Console.WriteLine($"DoEach :: {linkItem.Uri.AbsoluteUri}");
         linkItem.WebResponseResult = await Requester.GetFromWeb(linkItem.Uri.AbsoluteUri);
@@ -50,16 +47,16 @@ public class Scrape
             return; // do not add links for other hosts
         }
 
-        var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content);
-        var links = htmlDoc.Links.ToList();
-        foreach (var href in links.Select(link => link.Attributes["href"].Value).Where(href => !string.IsNullOrWhiteSpace(href)))
-        {
-            Console.WriteLine(href);
-            var absoluteUrl = new Uri(new Uri(RootUri.AbsoluteUri), href).AbsoluteUri;
-            LinkList.Add(absoluteUrl, linkItem.Uri.AbsoluteUri);
-            linkItem.Links.Add(href);
-            linkToScrape.Links.Add(new LinkObj(absoluteUrl));
-        }
+        var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content, linkItem.Uri.AbsoluteUri);
+        //var links = htmlDoc.Links.ToList();
+        //foreach (var href in links.Select(link => link.Attributes["href"].Value).Where(href => !string.IsNullOrWhiteSpace(href)))
+        //{
+        //    Console.WriteLine(href);
+        //    var absoluteUrl = new Uri(new Uri(RootUri.AbsoluteUri), href).AbsoluteUri;
+        //    LinkList.Add(absoluteUrl, linkItem.Uri.AbsoluteUri);
+        //    linkItem.Links.Add(href);
+        //    linkToScrape.Links.Add(new LinkObj(absoluteUrl));
+        //}
         LinksToScrape.Add(linkToScrape);
     }
 }
