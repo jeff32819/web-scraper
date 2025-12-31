@@ -11,8 +11,10 @@ public class Scrape
     }
 
     public HashSet<string> LinkHashSet { get; set; } = new();
+    public HashSet<string> LinksWithoutContent { get; set; } = new();
     public LinkObj RootUri { get; }
     public LinkList LinkList { get; } = new();
+
     public async Task Init(int maxScrape)
     {
         LinkList.AddRoot(RootUri.AbsoluteUri);
@@ -39,8 +41,10 @@ public class Scrape
 
         if (linkItem.WebResponseResult == null)
         {
-            return; // NEED TO LOG THIS AS A TYPE OF ERROR.
+            LinksWithoutContent.Add(linkItem.Uri.AbsoluteUri);
+            return;
         }
+
         var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content, linkItem.Uri.AbsoluteUri);
         ProcessLinks(htmlDoc, linkItem);
     }
@@ -48,11 +52,14 @@ public class Scrape
 
     public void ProcessLinks(HtmlDocHelper htmlDoc, LinkItem linkItem)
     {
+        // check if the site is from the same host as the root.
         if (!string.Equals(htmlDoc.Host, RootUri.Host, StringComparison.CurrentCultureIgnoreCase))
         {
             return;
         }
 
+        // process internal links, add them to the link list. 
+        // was checked above to make sure they are from the same host.
         foreach (var href in htmlDoc.InternalLinks)
         {
             Console.WriteLine(href);

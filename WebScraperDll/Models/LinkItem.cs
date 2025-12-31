@@ -11,16 +11,14 @@ namespace WebScraperDll.Models
         public Uri Uri { get; }
         
         public readonly Dictionary<string, int> OnPage = new Dictionary<string, int>();
-        /// <summary>
-        /// Has the link been scraped from the web.
-        /// </summary>
-        public bool LinkScrapedFromWeb { get;  private set; }
+
+        public int StatusCode { get;  private set; } = -1;
         public bool SkipScrape { get; set; }
-        public bool NeedToSrape => !SkipScrape && !LinkScrapedFromWeb;
+        public bool NeedToSrape => !SkipScrape && StatusCode == -1;
         public void SetWebResponseResult(WebResponseResult webResponseResult)
         {
             WebResponseResult = webResponseResult;
-            LinkScrapedFromWeb = true;
+            StatusCode = webResponseResult.Properties.StatusCode;
         }
         public WebResponseResult? WebResponseResult { get; private set; }
     }
