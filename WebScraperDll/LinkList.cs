@@ -14,7 +14,7 @@ namespace WebScraperDll
         /// <returns></returns>
         private LinkItem FindOrAdd(string scrapedLink)
         {
-            if (Links.TryFind(x => x.Uri.AbsoluteUri == scrapedLink, out var value))
+            if (Links.TryFind(x => x.AbsoluteUri == scrapedLink, out var value))
             {
                 return value;
             }

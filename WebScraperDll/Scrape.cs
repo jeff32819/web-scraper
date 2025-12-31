@@ -31,21 +31,21 @@ public class Scrape
 
     private async Task DoEach(LinkItem linkItem)
     {
-        var linkWasAdded = LinkHashSet.Add(linkItem.Uri.AbsoluteUri);
-        var linkToScrape = new LinkToScrape(linkItem.Uri.AbsoluteUri);
-        linkItem.SetWebResponseResult(await Requester.GetFromWeb(linkItem.Uri.AbsoluteUri));
-        if (IsNotTheSameHost(linkItem.Uri))
+        var linkWasAdded = LinkHashSet.Add(linkItem.AbsoluteUri);
+        var linkToScrape = new LinkToScrape(linkItem.AbsoluteUri);
+        linkItem.SetWebResponseResult(await Requester.GetFromWeb(linkItem.AbsoluteUri));
+        if (IsNotTheSameHost(linkItem.AbsoluteUri.ToUri()))
         {
             return; // do not add links for other hosts
         }
 
         if (linkItem.WebResponseResult == null)
         {
-            LinksWithoutContent.Add(linkItem.Uri.AbsoluteUri);
+            LinksWithoutContent.Add(linkItem.AbsoluteUri);
             return;
         }
 
-        var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content, linkItem.Uri.AbsoluteUri);
+        var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content, linkItem.AbsoluteUri);
         ProcessLinks(htmlDoc, linkItem);
     }
 
@@ -64,7 +64,7 @@ public class Scrape
         {
             Console.WriteLine(href);
             var absoluteUrl = new Uri(new Uri(RootUri.AbsoluteUri), href).AbsoluteUri;
-            LinkList.Add(absoluteUrl, linkItem.Uri.AbsoluteUri);
+            LinkList.Add(absoluteUrl, linkItem.AbsoluteUri);
         }
     }
 }

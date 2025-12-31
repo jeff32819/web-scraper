@@ -21,6 +21,9 @@ namespace WebScraperDll
             var uri = new Uri(txt);
             return uri.Host;
         }
+
+        public static Uri ToUri(this string txt) => new(txt);
+
         public static string ToMd5(this string txt) => Jeff32819DLL.MiscCore20.Code.Md5Hash(txt);
 
         public static bool TryPopFirst<T>(this List<T> list, out T value)

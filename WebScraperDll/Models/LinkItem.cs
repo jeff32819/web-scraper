@@ -6,9 +6,9 @@ namespace WebScraperDll.Models
     {
         public LinkItem(string absoluteUri)
         {
-            Uri = new Uri(absoluteUri);
+            AbsoluteUri = absoluteUri.ToAbsoluteUri();
         }
-        public Uri Uri { get; }
+        public string AbsoluteUri { get; }
         
         public readonly Dictionary<string, int> OnPage = new Dictionary<string, int>();
 
