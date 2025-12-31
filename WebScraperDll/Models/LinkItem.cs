@@ -1,4 +1,5 @@
 ﻿using System.Security.Cryptography;
+using WebRequesterDll.Models;
 
 namespace WebScraperDll.Models
 {
@@ -7,7 +8,7 @@ namespace WebScraperDll.Models
         public LinkItem(string absoluteUri)
         {
             AbsoluteUri = absoluteUri;
-            Md5 = Jeff32819DLL.MiscCore20.Code.Md5Hash(absoluteUri); 
+            Md5 = Jeff32819DLL.MiscCore20.Code.Md5Hash(absoluteUri);
         }
         public string Md5 { get; }
         public string AbsoluteUri { get; }
@@ -18,6 +19,7 @@ namespace WebScraperDll.Models
         public bool LinkScrapedFromWeb { get; set; }
         public bool SkipScrape { get; set; }
         public bool NeedToSrape => !SkipScrape && !LinkScrapedFromWeb;
+        public WebResponseResult? WebResponseResult { get; set; }
     }
     
 }

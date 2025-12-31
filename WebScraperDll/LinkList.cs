@@ -23,9 +23,14 @@ namespace WebScraperDll
             Links.Add(value);
             return value;
         }
+
+        public void AddRoot(string absoluteUri)
+        {
+            FindOrAdd(absoluteUri);
+        }
+
         public void Add(string absoluteUri, string pageUrl)
         {
-            
             var item = FindOrAdd(absoluteUri);
             if (item.OnPage.TryGetValue(pageUrl, out var count))
             {
@@ -34,13 +39,9 @@ namespace WebScraperDll
             }
             else
             {
-             //   item.WebRequest = webRequest;
-             //   item.LinkHash = Jeff32819DLL.MiscCore20.Code.Md5Hash(scrapedLink);
                 item.OnPage[pageUrl] = 1;
             }
         }
-        
-
         public LinkItem? GetNext() => Links.FirstOrDefault(x => x.NeedToSrape);
     }
 }

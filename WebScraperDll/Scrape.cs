@@ -18,7 +18,7 @@ public class Scrape
 
     public async Task Init()
     {
-        LinkList.Add(Url.AbsoluteUri, "");
+        LinkList.AddRoot(Url.AbsoluteUri);
         while (LinkList.GetNext() is { } link)
         {
             await DoEach(link);
