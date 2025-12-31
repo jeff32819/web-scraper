@@ -9,11 +9,16 @@
             return value != null;
         }
 
-        public static string NormalizeUri(string txt)
+        public static string ToAbsoluteUri(this string txt)
         {
             var uri = new Uri(txt);
             return uri.AbsoluteUri;
         }
-        
+        public static string GetHost(this string txt)
+        {
+            var uri = new Uri(txt);
+            return uri.Host;
+        }
+
     }
 }
