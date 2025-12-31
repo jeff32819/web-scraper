@@ -1,4 +1,6 @@
-﻿using WebScraperDll.Models;
+﻿using Newtonsoft.Json.Linq;
+
+using WebScraperDll.Models;
 
 namespace WebScraperDll
 {
@@ -11,28 +13,28 @@ namespace WebScraperDll
         ///     Link that is being scraped
         /// </summary>
         /// <param name="scrapedLink"></param>
+        /// <param name="pageUri"></param>
         /// <returns></returns>
-        private LinkItem FindOrAdd(string scrapedLink)
+        private LinkItem FindOrAdd(string scrapedLink, Uri pageUri)
         {
             if (Links.TryFind(x => x.AbsoluteUri == scrapedLink, out var value))
             {
                 return value;
             }
 
-            value = new LinkItem(scrapedLink);
+            value = new LinkItem(scrapedLink, new Uri(scrapedLink));
             Links.Add(value);
             return value;
         }
 
         public void AddRoot(string absoluteUri)
         {
-            FindOrAdd(absoluteUri);
+            Links.Add(new LinkItem(absoluteUri, new Uri(absoluteUri)));
         }
 
         public void Add(string absoluteUri, string pageUrl)
         {
-            var item = FindOrAdd(absoluteUri);
-            item.SkipScrape = !Code.SameHost(absoluteUri, pageUrl);
+            var item = FindOrAdd(absoluteUri, new Uri(pageUrl));
             if (item.OnPage.TryGetValue(pageUrl, out var count))
             {
                 item.OnPage[pageUrl] = count + 1;

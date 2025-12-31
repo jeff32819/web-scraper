@@ -24,17 +24,12 @@ public class Scrape
         }
     }
 
-    private bool IsNotTheSameHost(Uri uri)
-    {
-        return !uri.Host.Equals(RootUri.Host, StringComparison.OrdinalIgnoreCase);
-    }
 
     private async Task DoEach(LinkItem linkItem)
     {
         var linkWasAdded = LinkHashSet.Add(linkItem.AbsoluteUri);
-        var linkToScrape = new LinkToScrape(linkItem.AbsoluteUri);
         linkItem.SetWebResponseResult(await Requester.GetFromWeb(linkItem.AbsoluteUri));
-        if (IsNotTheSameHost(linkItem.AbsoluteUri.ToUri()))
+        if (Code.SameHost(RootUri.AbsoluteUri, linkItem.AbsoluteUri))
         {
             return; // do not add links for other hosts
         }
