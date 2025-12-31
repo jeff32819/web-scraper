@@ -9,7 +9,7 @@
   <ItemGroup>
     <PackageReference Include="HtmlAgilityPack" Version="1.12.4" />
     <PackageReference Include="Jeff32819DLL.MiscCore20" Version="1.0.126" />
-    <PackageReference Include="WebRequesterDll" Version="1.0.2" />
+    <PackageReference Include="WebRequesterDll" Version="1.0.3" />
   </ItemGroup>
 
 </Project>

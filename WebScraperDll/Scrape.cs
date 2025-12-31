@@ -7,43 +7,46 @@ public class Scrape
 {
     public Scrape(string url)
     {
-        Url = new Uri(url);
-        
+        RootUri = new Uri(url);
     }
-    
-    public string Host { get; } 
-    public Uri Url { get; } 
-   
-    public WebScraperDll.LinkList LinkList { get; } = new WebScraperDll.LinkList();
+
+    public string Host { get; }
+    public Uri RootUri { get; }
+
+    public LinkList LinkList { get; } = new();
 
     public async Task Init()
     {
-        LinkList.AddRoot(Url.AbsoluteUri);
+        LinkList.AddRoot(RootUri.AbsoluteUri);
         while (LinkList.GetNext() is { } link)
         {
             await DoEach(link);
         }
     }
 
-    private int PageCount { get; set; } = 0;
-    
-    private async Task DoEach(Models.LinkItem linkItem)
+    private bool IsNotTheSameHost(Uri uri)
+    {
+        return !uri.Host.Equals(RootUri.Host, StringComparison.OrdinalIgnoreCase);
+    }
+
+    private async Task DoEach(LinkItem linkItem)
     {
         linkItem.LinkScrapedFromWeb = true;
-        
         Console.WriteLine($"DoEach :: {linkItem.AbsoluteUri}");
-        PageCount++;
-        if (PageCount > 20)
+        linkItem.WebResponseResult = await Requester.GetFromWeb(linkItem.AbsoluteUri);
+        if (IsNotTheSameHost(linkItem.Uri))
         {
-            return;
+            return; // do not add links for other hosts
         }
-        var response = await Requester.GetFromWeb(linkItem.AbsoluteUri);
-        var htmlDoc = new HtmlDocHelper(response.Content);
-        foreach (var href in htmlDoc.Links.Select(link => link.Attributes["href"].Value).Where(href => !string.IsNullOrWhiteSpace(href)))
+
+        var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content);
+        var links = htmlDoc.Links.ToList();
+        foreach (var href in links.Select(link => link.Attributes["href"].Value).Where(href => !string.IsNullOrWhiteSpace(href)))
         {
             Console.WriteLine(href);
-            var absoluteUrl = new Uri(Url, href).ToString();
+            var absoluteUrl = new Uri(RootUri, href).ToString();
             LinkList.Add(absoluteUrl, linkItem.AbsoluteUri);
+            linkItem.Links.Add(href);
         }
     }
 }
