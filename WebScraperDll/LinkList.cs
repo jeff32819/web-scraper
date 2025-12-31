@@ -22,7 +22,7 @@ namespace WebScraperDll
                 return value;
             }
 
-            value = new LinkItem(scrapedLink, new Uri(scrapedLink));
+            value = new LinkItem(scrapedLink, pageUri);
             Links.Add(value);
             return value;
         }

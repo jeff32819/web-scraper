@@ -10,8 +10,15 @@ namespace WebScraperDll
             var pageUri = new Uri(pageAbsoluteUri);
             Host = pageUri.Host;
             Document.LoadHtml(html);
-            foreach (var linkUri in Document.DocumentNode.SelectNodes("//a[@href]").Select(item => item.GetAttributeValue("href", string.Empty)).Select(href => new Uri(new Uri(pageAbsoluteUri), href)))
+            var links = Document.DocumentNode.SelectNodes("//a[@href]");
+            if (links == null || !links.Any())
             {
+                // log no links found
+                return;
+            }
+            foreach (var linkUri in links.Select(item => item.GetAttributeValue("href", string.Empty)).Select(href => new Uri(new Uri(pageAbsoluteUri), href)))
+            {
+                AllLinks.Add(linkUri.AbsoluteUri);
                 if (string.Equals(pageUri.Host, linkUri.Host, StringComparison.CurrentCultureIgnoreCase))
                 {
                     InternalLinks.Add(linkUri.AbsoluteUri);
@@ -23,6 +30,7 @@ namespace WebScraperDll
             }
         }
         public string Host { get; }
+        public List<string> AllLinks { get; set; } = new();
         public List<string> InternalLinks { get; set; } = new();
         public List<string> ExternalLinks { get; set; } = new();
 
