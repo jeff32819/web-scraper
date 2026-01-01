@@ -1,11 +1,10 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 
 namespace WebScraperDll
 {
     public static class Ext
     {
-        public static bool TryFind<T>(this List<T> list, Func<T, bool> predicate, out T value)
+        public static bool TryFind<T>(this List<T> list, Func<T, bool> predicate, out T? value)
         {
 
             value = list.FirstOrDefault(predicate);

@@ -1,60 +1,51 @@
-﻿using WebRequesterDll;
-using WebScraperDll.Models;
+﻿using WebScraperDll.Models;
 
 namespace WebScraperDll;
 
 public class Scrape
 {
+    public HashSet<string> PageScrapedHashSet = new();
+
     public Scrape(string url, int maxScrape)
     {
-        LinkList = new LinkContainer(maxScrape);
+        MaxPagesToScrape = maxScrape;
         RootUri = new LinkObj(url);
+        ScrapeQueue = new ScrapeQueue(maxScrape);
+        var pg = new PageItem(RootUri.AbsoluteUri);
+        Pages.Add(pg);
+        ScrapeQueue.Enqueue(pg);
+
     }
 
-
+    public int MaxPagesToScrape { get; }
+    public List<PageItem> Pages { get; set; } = new();
     public HashSet<string> LinksWithoutContent { get; set; } = new();
     public LinkObj RootUri { get; }
-    public LinkContainer LinkList { get; }
-
-    public async Task Init()
+    public LinkContainer LinkContainer { get; }
+    public ScrapeQueue ScrapeQueue { get; }
+    public async Task Process()
     {
-        LinkList.AddRoot(RootUri.AbsoluteUri);
-        while (LinkList.GetNext() is { } link)
+        while (ScrapeQueue.GetNext() is { } page)
         {
-            await DoEach(link);
+            PageScrapedHashSet.Add(page.PageUri);
+            await page.GetWebResponseResult();
+            foreach(var link in page.Links)
+            {
+                Console.WriteLine(link.LinkAbsoluteUri);
+                Console.WriteLine(link.IsInternalLink);
+                Console.WriteLine("********************************************");
+            }
+
+            if (RootUri.Host != page.PageHost)
+            {
+                continue;
+            }
+            foreach (var link in page.Links.Where(x => x.IsInternalLink))
+            {
+                Pages.Add(new PageItem(link.LinkAbsoluteUri));
+            }
         }
-    }
-
-
-    private async Task DoEach(LinkItem linkItem)
-    {
-        linkItem.SetWebResponseResult(await Requester.GetFromWeb(linkItem.LinkAbsoluteUri));
-        ProcessLinks(linkItem);
-    }
-
-    public void ProcessLinks(LinkItem linkItem)
-    {
-        if (linkItem.WebResponseResult == null)
-        {
-            LinksWithoutContent.Add(linkItem.LinkAbsoluteUri);
-            return;
-        }
-
-        var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content, linkItem.PageAbsoluteUri);
-        // check if the site is from the same host as the root.
-        Console.WriteLine($"is same host {linkItem.LinkAbsoluteUri} -- {RootUri.AbsoluteUri}");
-        if (linkItem.VerifyLinksOnly)
-        {
-            return;
-        }
-
-        // process internal links, add them to the link list. 
-        // was checked above to make sure they are from the same host.
-        foreach (var relativeUri in htmlDoc.AllLinks)
-        {
-            Console.WriteLine(relativeUri);
-
-            LinkList.Add(relativeUri, linkItem);
-        }
+        
+        Console.WriteLine("done");
     }
 }

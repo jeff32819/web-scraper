@@ -6,7 +6,8 @@ using System.Threading.Tasks;
 
 namespace WebScraperDll
 {
-    internal class PageContainer
+    public class PageContainer
     {
+        
     }
 }

@@ -1,4 +1,4 @@
-﻿var tmp = new WebScraperDll.Scrape("http://jeffmathews.com", 100);
-await tmp.Init();
+﻿var tmp = new WebScraperDll.Scrape("http://jeffmathews.com", 1000);
+await tmp.Process();
 
 
