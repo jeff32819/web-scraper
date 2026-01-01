@@ -10,7 +10,7 @@ public class Scrape
     {
         MaxPagesToScrape = maxScrape;
         RootUri = new LinkObj(url);
-        ScrapeQueue = new ScrapeQueue(maxScrape);
+        ScrapeQueue = new ScrapeQueue();
         var pg = new PageItem(RootUri.AbsoluteUri);
         Pages.Add(pg);
         ScrapeQueue.Enqueue(pg);
