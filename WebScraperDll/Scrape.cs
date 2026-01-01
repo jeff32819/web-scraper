@@ -12,16 +12,15 @@ public class Scrape
         RootUri = new LinkObj(url);
         ScrapeQueue = new ScrapeQueue();
         var pg = new PageItem(RootUri.AbsoluteUri);
-        Pages.Add(pg);
+        PageContainer.Add(pg);
         ScrapeQueue.Enqueue(pg);
 
     }
 
     public int MaxPagesToScrape { get; }
-    public List<PageItem> Pages { get; set; } = new();
-    public HashSet<string> LinksWithoutContent { get; set; } = new();
     public LinkObj RootUri { get; }
-    public LinkContainer LinkContainer { get; }
+    public LinkContainer LinkContainer { get; } = new();
+    public PageContainer PageContainer { get; } = new();
     public ScrapeQueue ScrapeQueue { get; }
     public async Task Process()
     {
@@ -42,7 +41,9 @@ public class Scrape
             }
             foreach (var link in page.Links.Where(x => x.IsInternalLink))
             {
-                Pages.Add(new PageItem(link.LinkAbsoluteUri));
+                var pg = new PageItem(link.LinkAbsoluteUri);
+                PageContainer.Add(pg);
+                ScrapeQueue.Enqueue(pg);
             }
         }
         

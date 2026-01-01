@@ -22,7 +22,7 @@ public class PageItem(string pageUri)
 
         foreach (var link in linkArr)
         {
-            Links.Add(new LinkItem(link, PageUri, PageHost));
+            Links.Add(new LinkItem(link, PageUri));
         }
         
         

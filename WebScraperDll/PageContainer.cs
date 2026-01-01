@@ -1,13 +1,17 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using WebScraperDll.Models;
 
 namespace WebScraperDll
 {
     public class PageContainer
     {
-        
+        private List<PageItem> Pages { get; set; } = new();
+
+        public void Add(PageItem pg)
+        {
+            if (Pages.All(p => p.PageUri != pg.PageUri))
+            {
+                Pages.Add(pg);
+            }
+        }
     }
 }

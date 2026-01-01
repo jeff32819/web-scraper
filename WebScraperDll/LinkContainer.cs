@@ -2,7 +2,7 @@
 
 namespace WebScraperDll
 {
-    public class LinkContainer(int maxScrapedPages)
+    public class LinkContainer()
     {
         public List<LinkItem> Links { get; } = new();
 

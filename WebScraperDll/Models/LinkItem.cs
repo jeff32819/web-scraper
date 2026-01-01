@@ -2,17 +2,16 @@
 
 public class LinkItem
 {
-    public LinkItem(string relativeUri, string pageUri, string pageHost)
+    public LinkItem(string relativeUri, string pageUri)
     {
         var uri = relativeUri.ToUri(pageUri);
         LinkHost = uri.Host;
         LinkAbsoluteUri = uri.AbsoluteUri;
-        PageHost = pageHost;
-        PageAbsoluteUri = pageUri;
+        var pageHost = pageUri.ToUri().Host;
+        var pageAbsoluteUri = pageUri;
+        IsInternalLink = string.Equals(pageHost, LinkHost, StringComparison.CurrentCultureIgnoreCase);
     }
-    public string PageHost { get; }
     public string LinkHost { get; }
-    public string PageAbsoluteUri { get; }
     public string LinkAbsoluteUri { get; }
-    public bool IsInternalLink => string.Equals(PageHost, LinkHost, StringComparison.CurrentCultureIgnoreCase);
+    public bool IsInternalLink { get; }
 }
