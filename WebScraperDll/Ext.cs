@@ -22,7 +22,17 @@ namespace WebScraperDll
             return uri.Host;
         }
 
-        public static Uri ToUri(this string txt) => new(txt);
+        public static Uri ToUri(this string txt)
+        {
+            try
+            {
+                return new Uri(txt);
+            }
+            catch
+            {
+                throw new Exception($"Failed to convert '{txt}' to Uri");
+            }
+        }
 
         public static string ToMd5(this string txt) => Jeff32819DLL.MiscCore20.Code.Md5Hash(txt);
 

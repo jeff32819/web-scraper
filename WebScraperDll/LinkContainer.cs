@@ -1,11 +1,11 @@
-﻿using Newtonsoft.Json.Linq;
-
-using WebScraperDll.Models;
+﻿using WebScraperDll.Models;
 
 namespace WebScraperDll
 {
-    public class LinkList
+    public class LinkContainer(int maxScrapedPages)
     {
+        public HashSet<string> ScrapedLinks { get; set; } = new();
+        public int MaxScrapedPages { get; } = maxScrapedPages;
         public List<LinkItem> Links { get; } = new();
 
 
@@ -29,7 +29,9 @@ namespace WebScraperDll
 
         public void AddRoot(string absoluteUri)
         {
-            Links.Add(new LinkItem(absoluteUri, new Uri(absoluteUri)));
+            // ReSharper disable once InlineTemporaryVariable
+            var pageUri = absoluteUri; // for root, page is same as link (here for clarity)
+            Links.Add(new LinkItem(absoluteUri, new Uri(pageUri)));
         }
 
         public void Add(string absoluteUri, string pageUrl)
@@ -45,6 +47,16 @@ namespace WebScraperDll
                 item.OnPage[pageUrl] = 1;
             }
         }
-        public LinkItem? GetNext() => Links.FirstOrDefault(x => x.NeedToSrape);
+
+        public LinkItem? GetNext()
+        {
+            var tmp = Links.FirstOrDefault(x => x.StatusCode == -1);
+            if (tmp == null || ScrapedLinks.Count >= MaxScrapedPages)
+            {
+                return null;
+            }
+            ScrapedLinks.Add(tmp.AbsoluteUri);
+            return tmp;
+        }
     }
 }

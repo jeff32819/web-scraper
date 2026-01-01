@@ -5,20 +5,21 @@ namespace WebScraperDll;
 
 public class Scrape
 {
-    public Scrape(string url)
+    public Scrape(string url, int maxScrape)
     {
+        LinkList = new LinkContainer(maxScrape);
         RootUri = new LinkObj(url);
     }
 
-    public HashSet<string> LinkHashSet { get; set; } = new();
+
     public HashSet<string> LinksWithoutContent { get; set; } = new();
     public LinkObj RootUri { get; }
-    public LinkList LinkList { get; } = new();
+    public LinkContainer LinkList { get; } 
 
-    public async Task Init(int maxScrape)
+    public async Task Init()
     {
         LinkList.AddRoot(RootUri.AbsoluteUri);
-        while (LinkList.GetNext() is { } link && LinkHashSet.Count < maxScrape)
+        while (LinkList.GetNext() is { } link)
         {
             await DoEach(link);
         }
@@ -27,32 +28,25 @@ public class Scrape
 
     private async Task DoEach(LinkItem linkItem)
     {
-        var linkWasAdded = LinkHashSet.Add(linkItem.AbsoluteUri);
         linkItem.SetWebResponseResult(await Requester.GetFromWeb(linkItem.AbsoluteUri));
-        //if (!Code.SameHost(RootUri.AbsoluteUri, linkItem.AbsoluteUri))
-        //{
-        //    return; // do not add links for other hosts
-        //}
+        ProcessLinks( linkItem);
+    }
 
+    public void ProcessLinks(LinkItem linkItem)
+    {
         if (linkItem.WebResponseResult == null)
         {
             LinksWithoutContent.Add(linkItem.AbsoluteUri);
             return;
         }
 
-        var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content, linkItem.AbsoluteUri);
-        ProcessLinks(htmlDoc, linkItem);
-    }
-
-
-    public void ProcessLinks(HtmlDocHelper htmlDoc, LinkItem linkItem)
-    {
+        var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content, linkItem.PageAbsoluteUri);
         // check if the site is from the same host as the root.
-        if (!Code.SameHost(linkItem.AbsoluteUri, RootUri.AbsoluteUri))
+        Console.WriteLine($"is same host {linkItem.AbsoluteUri} -- {RootUri.AbsoluteUri}");
+        if (linkItem.VerifyLinksOnly)
         {
             return;
         }
-
         // process internal links, add them to the link list. 
         // was checked above to make sure they are from the same host.
         foreach (var href in htmlDoc.AllLinks)

@@ -7,7 +7,8 @@ namespace WebScraperDll
         public HtmlDocument Document { get; } = new();
         public HtmlDocHelper(string html, string pageAbsoluteUri)
         {
-            var pageUri = new Uri(pageAbsoluteUri);
+            Console.WriteLine($"HtmlDocHelper = pageAbsoluteUri = {pageAbsoluteUri}");
+            var pageUri = pageAbsoluteUri.ToUri();
             Host = pageUri.Host;
             Document.LoadHtml(html);
             var links = Document.DocumentNode.SelectNodes("//a[@href]");

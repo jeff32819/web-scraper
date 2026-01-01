@@ -8,7 +8,7 @@ namespace WebScraperDll.Models
         {
             AbsoluteUri = absoluteUri.ToAbsoluteUri();
             PageAbsoluteUri = pageUri.AbsoluteUri;
-            SameHost = string.Equals(AbsoluteUri.GetHost(), PageAbsoluteUri.GetHost(), StringComparison.CurrentCultureIgnoreCase);
+            VerifyLinksOnly = !string.Equals(AbsoluteUri.GetHost(), PageAbsoluteUri.GetHost(), StringComparison.CurrentCultureIgnoreCase);
         }
         
         public string PageAbsoluteUri { get; }
@@ -16,9 +16,11 @@ namespace WebScraperDll.Models
         
         public readonly Dictionary<string, int> OnPage = new Dictionary<string, int>();
 
+        /// <summary>
+        /// Verify link only, do not scrape content
+        /// </summary>
+        public bool VerifyLinksOnly { get; }
         public int StatusCode { get;  private set; } = -1;
-        public bool SameHost { get; }
-        public bool NeedToSrape => SameHost && StatusCode == -1;
         public void SetWebResponseResult(WebResponseResult webResponseResult)
         {
             WebResponseResult = webResponseResult;
