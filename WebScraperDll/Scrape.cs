@@ -14,7 +14,7 @@ public class Scrape
 
     public HashSet<string> LinksWithoutContent { get; set; } = new();
     public LinkObj RootUri { get; }
-    public LinkContainer LinkList { get; } 
+    public LinkContainer LinkList { get; }
 
     public async Task Init()
     {
@@ -28,32 +28,33 @@ public class Scrape
 
     private async Task DoEach(LinkItem linkItem)
     {
-        linkItem.SetWebResponseResult(await Requester.GetFromWeb(linkItem.AbsoluteUri));
-        ProcessLinks( linkItem);
+        linkItem.SetWebResponseResult(await Requester.GetFromWeb(linkItem.LinkAbsoluteUri));
+        ProcessLinks(linkItem);
     }
 
     public void ProcessLinks(LinkItem linkItem)
     {
         if (linkItem.WebResponseResult == null)
         {
-            LinksWithoutContent.Add(linkItem.AbsoluteUri);
+            LinksWithoutContent.Add(linkItem.LinkAbsoluteUri);
             return;
         }
 
         var htmlDoc = new HtmlDocHelper(linkItem.WebResponseResult.Content, linkItem.PageAbsoluteUri);
         // check if the site is from the same host as the root.
-        Console.WriteLine($"is same host {linkItem.AbsoluteUri} -- {RootUri.AbsoluteUri}");
+        Console.WriteLine($"is same host {linkItem.LinkAbsoluteUri} -- {RootUri.AbsoluteUri}");
         if (linkItem.VerifyLinksOnly)
         {
             return;
         }
+
         // process internal links, add them to the link list. 
         // was checked above to make sure they are from the same host.
-        foreach (var href in htmlDoc.AllLinks)
+        foreach (var relativeUri in htmlDoc.AllLinks)
         {
-            Console.WriteLine(href);
-            var absoluteUrl = new Uri(new Uri(RootUri.AbsoluteUri), href).AbsoluteUri;
-            LinkList.Add(absoluteUrl, linkItem.AbsoluteUri);
+            Console.WriteLine(relativeUri);
+
+            LinkList.Add(relativeUri, linkItem);
         }
     }
 }

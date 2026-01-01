@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace WebScraperDll
 {
@@ -13,6 +14,7 @@ namespace WebScraperDll
 
         public static string ToAbsoluteUri(this string txt)
         {
+            Debug.Print($"Converting to absolute URI: {txt}");
             var uri = new Uri(txt);
             return uri.AbsoluteUri;
         }
@@ -33,7 +35,17 @@ namespace WebScraperDll
                 throw new Exception($"Failed to convert '{txt}' to Uri");
             }
         }
-
+        public static Uri ToUri(this string txt, string pageUrl)
+        {
+            try
+            {
+                return new Uri(new Uri(pageUrl), txt);
+            }
+            catch
+            {
+                throw new Exception($"Failed to convert '{txt}' to Uri");
+            }
+        }
         public static string ToMd5(this string txt) => Jeff32819DLL.MiscCore20.Code.Md5Hash(txt);
 
         public static bool TryPopFirst<T>(this List<T> list, out T value)

@@ -12,28 +12,20 @@ namespace WebScraperDll
             Host = pageUri.Host;
             Document.LoadHtml(html);
             var links = Document.DocumentNode.SelectNodes("//a[@href]");
-            if (links == null || !links.Any())
+            // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
+            // selectnodes can actually be null, but the signature says it cannot
+            if (links == null)
             {
-                // log no links found
                 return;
             }
-            foreach (var linkUri in links.Select(item => item.GetAttributeValue("href", string.Empty)).Select(href => new Uri(new Uri(pageAbsoluteUri), href)))
+            foreach (var link in links)
             {
-                AllLinks.Add(linkUri.AbsoluteUri);
-                if (string.Equals(pageUri.Host, linkUri.Host, StringComparison.CurrentCultureIgnoreCase))
-                {
-                    InternalLinks.Add(linkUri.AbsoluteUri);
-                }
-                else
-                {
-                    ExternalLinks.Add(linkUri.AbsoluteUri);
-                }
+                AllLinks.Add(link.GetAttributeValue("href", string.Empty));
             }
         }
         public string Host { get; }
         public List<string> AllLinks { get; set; } = new();
-        public List<string> InternalLinks { get; set; } = new();
-        public List<string> ExternalLinks { get; set; } = new();
+
 
     }
 }

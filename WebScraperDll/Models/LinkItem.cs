@@ -4,15 +4,21 @@ namespace WebScraperDll.Models
 {
     public class LinkItem
     {
-        public LinkItem(string absoluteUri, Uri pageUri)
+        public LinkItem(string absoluteUri)
         {
-            AbsoluteUri = absoluteUri.ToAbsoluteUri();
-            PageAbsoluteUri = pageUri.AbsoluteUri;
-            VerifyLinksOnly = !string.Equals(AbsoluteUri.GetHost(), PageAbsoluteUri.GetHost(), StringComparison.CurrentCultureIgnoreCase);
+            LinkAbsoluteUri = absoluteUri.ToAbsoluteUri();
+            PageAbsoluteUri = absoluteUri.ToAbsoluteUri();
+            VerifyLinksOnly = false;
+        }
+        public LinkItem(string absoluteUri, LinkItem onPage)
+        {
+            LinkAbsoluteUri = absoluteUri.ToAbsoluteUri();
+            PageAbsoluteUri = onPage.LinkAbsoluteUri;
+            VerifyLinksOnly = !string.Equals(LinkAbsoluteUri.GetHost(), PageAbsoluteUri.GetHost(), StringComparison.CurrentCultureIgnoreCase);
         }
         
         public string PageAbsoluteUri { get; }
-        public string AbsoluteUri { get; }
+        public string LinkAbsoluteUri { get; }
         
         public readonly Dictionary<string, int> OnPage = new Dictionary<string, int>();
 

@@ -13,38 +13,36 @@ namespace WebScraperDll
         ///     Link that is being scraped
         /// </summary>
         /// <param name="scrapedLink"></param>
-        /// <param name="pageUri"></param>
+        /// <param name="onPage"></param>
         /// <returns></returns>
-        private LinkItem FindOrAdd(string scrapedLink, Uri pageUri)
+        private LinkItem FindOrAdd(string scrapedLink, LinkItem onPage)
         {
-            if (Links.TryFind(x => x.AbsoluteUri == scrapedLink, out var value))
+            if (Links.TryFind(x => x.LinkAbsoluteUri == scrapedLink, out var value))
             {
                 return value;
             }
-
-            value = new LinkItem(scrapedLink, pageUri);
+            value = new LinkItem(scrapedLink, onPage);
             Links.Add(value);
             return value;
         }
 
         public void AddRoot(string absoluteUri)
         {
-            // ReSharper disable once InlineTemporaryVariable
-            var pageUri = absoluteUri; // for root, page is same as link (here for clarity)
-            Links.Add(new LinkItem(absoluteUri, new Uri(pageUri)));
+            Links.Add(new LinkItem(absoluteUri));
         }
 
-        public void Add(string absoluteUri, string pageUrl)
+        public void Add(string relativeUri, LinkItem onPage)
         {
-            var item = FindOrAdd(absoluteUri, new Uri(pageUrl));
-            if (item.OnPage.TryGetValue(pageUrl, out var count))
+            var absoluteUrl = new Uri(new Uri(onPage.LinkAbsoluteUri), relativeUri).AbsoluteUri;
+            var item = FindOrAdd(absoluteUrl, onPage);
+            if (item.OnPage.TryGetValue(onPage.LinkAbsoluteUri, out var count))
             {
-                item.OnPage[pageUrl] = count + 1;
-                Console.WriteLine($"Multiple Times = {item.OnPage[pageUrl]} = on page = {pageUrl}");
+                item.OnPage[onPage.LinkAbsoluteUri] = count + 1;
+                Console.WriteLine($"Multiple Times = {item.OnPage[onPage.LinkAbsoluteUri]} = on page = {onPage.LinkAbsoluteUri}");
             }
             else
             {
-                item.OnPage[pageUrl] = 1;
+                item.OnPage[onPage.LinkAbsoluteUri] = 1;
             }
         }
 
@@ -55,7 +53,7 @@ namespace WebScraperDll
             {
                 return null;
             }
-            ScrapedLinks.Add(tmp.AbsoluteUri);
+            ScrapedLinks.Add(tmp.LinkAbsoluteUri);
             return tmp;
         }
     }
