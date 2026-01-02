@@ -4,15 +4,15 @@ namespace WebScraperDll;
 
 public class ScrapeQueue()
 {
-    private readonly Queue<PageItem> _queue = new();
-    private readonly HashSet<string> _set = new();
+    private readonly Queue<string> _queue = new();
+    private readonly HashSet<string> _hashSet = new();
 
 
     public int Count => _queue.Count;
 
-    public bool Enqueue(PageItem item)
+    public bool Enqueue(string item)
     {
-        if (!_set.Add(item.PageUri))
+        if (!_hashSet.Add(item))
         {
             return false;
         }
@@ -20,11 +20,11 @@ public class ScrapeQueue()
         return true;
     }
 
-    public PageItem? GetNext() => _queue.Count == 0 ? null : _queue.Dequeue();
+    public string? GetNext() => _queue.Count == 0 ? null : _queue.Dequeue();
 
     public void Clear()
     {
         _queue.Clear();
-        _set.Clear();
+        _hashSet.Clear();
     }
 }

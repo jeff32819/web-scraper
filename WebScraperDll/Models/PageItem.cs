@@ -11,7 +11,9 @@ public class PageItem(string pageUri)
     public string PageUri { get; set; } = pageUri;
 
     public int StatusCode { get; private set; } = -1;
-    public WebResponseResult? WebResponseResult { get; private set; }
+    
+    private WebResponseResult? WebResponseResult { get; set; }
+    
     public List<LinkItem> Links { get; } = new();
 
     public async Task GetWebResponseResult()
