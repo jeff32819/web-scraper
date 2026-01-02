@@ -39,7 +39,7 @@ public class Scrape
             {
                 continue;
             }
-            foreach (var link in page.Links.Where(x => x.IsInternalLink))
+            foreach (var link in page.Links)
             {
                 var pg = new PageItem(link.LinkAbsoluteUri);
                 PageContainer.Add(pg);
