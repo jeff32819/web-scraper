@@ -17,21 +17,23 @@ public class HtmlDocHelper
             return;
         }
 
-        RawLinks = links.ToList();
-        foreach (var link in RawLinks)
+        LinkHtmlNodes = links.ToList();
+        foreach (var link in LinkHtmlNodes)
         {
             Links.Add(new LinkItem
             {
                 Href = link.GetAttributeValue("href", string.Empty),
                 OuterHtml = link.OuterHtml,
                 InnerHtml = link.InnerHtml,
+                Target = link.GetAttributeValue("target", "_self")
             });
         }
     }
 
     public HtmlDocument Document { get; } = new();
+    public List<string> Hrefs => Links.Select(l => l.Href).ToList();
     public List<LinkItem> Links { get; set; } = new();
-    public List<HtmlNode> RawLinks { get; set; } = new();
+    public List<HtmlNode> LinkHtmlNodes { get; set; } = new();
 
 
     public class LinkItem
@@ -39,5 +41,6 @@ public class HtmlDocHelper
         public string Href { get; set; } = string.Empty;
         public string OuterHtml { get; set; } = string.Empty;
         public string InnerHtml { get; set; } = string.Empty;
+        public string Target { get; set; } = string.Empty;
     }
 }

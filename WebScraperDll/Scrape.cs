@@ -20,6 +20,19 @@ public class Scrape
     public ScrapeQueue ScrapeQueue { get; }
     public async Task Process()
     {
+
+        var xxx = await WebScraperDll.Code.GetFromWeb("http://jeffmathews.com");
+
+        Console.WriteLine(string.Join(Environment.NewLine, xxx.HtmlDocHelper.Hrefs));
+        await File.WriteAllTextAsync("t:\\links.json", Newtonsoft.Json.JsonConvert.SerializeObject(xxx.HtmlDocHelper.Links, Formatting.Indented));
+        Console.WriteLine();
+
+
+        return;
+        
+        
+        
+        
         while (ScrapeQueue.GetNext() is { } link)
         {
 
