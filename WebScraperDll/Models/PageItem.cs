@@ -6,7 +6,7 @@ namespace WebScraperDll.Models;
 
 public class PageItem(string pageUri)
 {
-    public string PageHost { get; } = new Uri(pageUri).Host;
+    // public string PageHost { get; } = new Uri(pageUri).Host;
 
     public string PageUri { get; set; } = pageUri;
 
@@ -25,13 +25,13 @@ public class PageItem(string pageUri)
 
         foreach (var link in linkArr)
         {
-            var parseLink = ParseLink(link);
-            if (string.IsNullOrEmpty(parseLink))
-            {
-                continue;
-            }
+            //var parseLink = ParseLink(link);
+            //if (string.IsNullOrEmpty(parseLink))
+            //{
+            //    continue;
+            //}
 
-            Links.Add(new LinkItem(link, PageUri));
+            //Links.Add(new LinkItem(link, PageUri));
         }
 
 

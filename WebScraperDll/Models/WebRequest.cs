@@ -1,12 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace WebScraperDll.Models
+﻿namespace WebScraperDll.Models
 {
-    internal class WebRequest
+    public class WebRequest
     {
+        
     }
 }

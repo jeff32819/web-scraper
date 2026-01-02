@@ -8,7 +8,6 @@ public class HtmlDocHelper
     {
         Console.WriteLine($"HtmlDocHelper = pageAbsoluteUri = {pageAbsoluteUri}");
         var pageUri = pageAbsoluteUri.ToUri();
-        Host = pageUri.Host;
         Document.LoadHtml(html);
         var links = Document.DocumentNode.SelectNodes("//a[@href]");
         // ReSharper disable once ConditionIsAlwaysTrueOrFalseAccordingToNullableAPIContract
@@ -18,13 +17,27 @@ public class HtmlDocHelper
             return;
         }
 
-        foreach (var link in links)
+        RawLinks = links.ToList();
+        foreach (var link in RawLinks)
         {
-            Links.Add(link.GetAttributeValue("href", string.Empty));
+            Links.Add(new LinkItem
+            {
+                Href = link.GetAttributeValue("href", string.Empty),
+                OuterHtml = link.OuterHtml,
+                InnerHtml = link.InnerHtml,
+            });
         }
     }
 
     public HtmlDocument Document { get; } = new();
-    public string Host { get; }
-    public List<string> Links { get; set; } = new();
+    public List<LinkItem> Links { get; set; } = new();
+    public List<HtmlNode> RawLinks { get; set; } = new();
+
+
+    public class LinkItem
+    {
+        public string Href { get; set; } = string.Empty;
+        public string OuterHtml { get; set; } = string.Empty;
+        public string InnerHtml { get; set; } = string.Empty;
+    }
 }

@@ -5,8 +5,6 @@ namespace WebScraperDll;
 
 public class Scrape
 {
-
-
     public Scrape(string url, int maxScrape)
     {
         MaxPagesToScrape = maxScrape;
@@ -33,10 +31,10 @@ public class Scrape
             // Optional: Add checks to avoid infinite loops for pages with many links
             // Optional: Handle broken links or timeouts
 
-            if (RootUri.Host != pg.PageHost)
-            {
-                continue;
-            }
+            //if (RootUri.Host != pg.PageHost)
+            //{
+            //    continue;
+            //}
 
             if (ScrapeQueue.Count >= MaxPagesToScrape)
             {
@@ -48,23 +46,6 @@ public class Scrape
                 ScrapeQueue.Enqueue(linkItem.LinkAbsoluteUri);
             }
 
-
-            //await page.GetWebResponseResult();
-            //foreach(var link in page.Links)
-            //{
-            //    Console.WriteLine(link.LinkAbsoluteUri);
-            //    Console.WriteLine(link.IsInternalLink);
-            //    Console.WriteLine("********************************************");
-            //}
-
-            //if (RootUri.Host != page.PageHost)
-            //{
-            //    continue;
-            //}
-            //foreach (var link in page.Links)
-            //{
-            //    ScrapeQueue.Enqueue(PageContainer.Add(link.LinkAbsoluteUri));
-            //}
 
 
 
