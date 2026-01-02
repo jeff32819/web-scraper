@@ -4,7 +4,7 @@ namespace WebScraperDll;
 
 public class Scrape
 {
-    public HashSet<string> PageScrapedHashSet = new();
+
 
     public Scrape(string url, int maxScrape)
     {
@@ -23,7 +23,6 @@ public class Scrape
     {
         while (ScrapeQueue.GetNext() is { } page)
         {
-            PageScrapedHashSet.Add(page.PageUri);
             await page.GetWebResponseResult();
             foreach(var link in page.Links)
             {

@@ -36,14 +36,13 @@ public class PageItem(string pageUri)
         // maybe return links for processing on the page?
     }
 
-    public string ParseLink(string link)
+    private string ParseLink(string link)
     {
         if (string.IsNullOrEmpty(link))
         {
             return "";
         }
 
-        // Attempt to parse the link and make it absolute if it's relative
         try
         {
             var absoluteUri = new Uri(new Uri(PageUri), link);
@@ -51,7 +50,6 @@ public class PageItem(string pageUri)
         }
         catch (UriFormatException)
         {
-            // Handle cases where the link is not a valid URI format
             return "";
         }
     }
