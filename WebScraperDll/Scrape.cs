@@ -11,10 +11,7 @@ public class Scrape
         MaxPagesToScrape = maxScrape;
         RootUri = new LinkObj(url);
         ScrapeQueue = new ScrapeQueue();
-        var pg = new PageItem(RootUri.AbsoluteUri);
-        PageContainer.Add(pg);
-        ScrapeQueue.Enqueue(pg);
-
+        ScrapeQueue.Enqueue(PageContainer.Add(RootUri.AbsoluteUri));
     }
 
     public int MaxPagesToScrape { get; }
@@ -41,9 +38,7 @@ public class Scrape
             }
             foreach (var link in page.Links)
             {
-                var pg = new PageItem(link.LinkAbsoluteUri);
-                PageContainer.Add(pg);
-                ScrapeQueue.Enqueue(pg);
+                ScrapeQueue.Enqueue(PageContainer.Add(link.LinkAbsoluteUri));
             }
         }
         

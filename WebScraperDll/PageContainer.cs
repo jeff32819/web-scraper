@@ -6,12 +6,14 @@ namespace WebScraperDll
     {
         private List<PageItem> Pages { get; set; } = new();
 
-        public void Add(PageItem pg)
+        public PageItem Add(string pageUrl)
         {
+            var pg = new PageItem(pageUrl);
             if (Pages.All(p => p.PageUri != pg.PageUri))
             {
                 Pages.Add(pg);
             }
+            return pg;
         }
     }
 }
